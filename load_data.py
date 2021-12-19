@@ -21,28 +21,40 @@ def load_celebA_dataset(label_name,private_attribute_name):
     f2 = open(dataPath + 'train_label.pickle', 'rb')
     f3 = open(dataPath + 'test_data.pickle', 'rb')
     f4 = open(dataPath + 'test_label.pickle', 'rb')
+    f5 = open(dataPath + 'validation_data.pickle', 'rb')
+    f6 = open(dataPath + 'validation_label.pickle', 'rb')
 
     X_train = np.array(pickle.load(f1), dtype='float32')
     y_train = pickle.load(f2)
     X_test = np.array(pickle.load(f3), dtype='float32')
     y_test = pickle.load(f4)
+    X_val = np.array(pickle.load(f5), dtype='float32')
+    y_val = pickle.load(f6)
     f1.close()
     f2.close()
     f3.close()
     f4.close()
+    f5.close()
+    f6.close()
 
     train_data = torch.from_numpy(X_train)
     train_label = torch.from_numpy(y_train[:,label_number])
     test_data = torch.from_numpy(X_test)
     test_label = torch.from_numpy(y_test[:,label_number])
+    val_data = torch.torch.from_numpy(X_val)
+    val_label = torch.from_numpy(y_val[:,label_number])
     train_private_label = torch.from_numpy(y_train[:,private_attribute_number])
     test_private_label = torch.from_numpy(y_test[:,private_attribute_number])
+    val_private_label = torch.from_numpy(y_val[:, private_attribute_number])
+
     print("train label ratio: ",Counter(np.array(train_label)))
     print("test label ratio: ",Counter(np.array(test_label)))
+    print("validation label ratio: ", Counter(np.array(val_label)))
     print("train private label ratio: ",Counter(np.array(train_private_label)))
     print("test private label ratio: ",Counter(np.array(test_private_label)))
+    print("validation private label ratio: ", Counter(np.array(val_private_label)))
 
-    return train_data,train_label,test_data,test_label,train_private_label,test_private_label
+    return train_data,train_label,test_data,test_label,val_data,val_label,train_private_label,test_private_label,val_private_label
 
 # this data loader only contains data and accuracy label
 def construct_data_loader(data,label,batch_size):
